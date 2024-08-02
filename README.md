@@ -6,7 +6,7 @@ Utilities for parsing and manipulating the FOND planning language. Will be the e
 
 ```bash
 # Determinize a FOND problem
-python3 -m fond_utilities.determinize <in-domain.pddl> <out-domain.pddl>
+python determinizer --input <in-domain.pddl> --output <out-domain.pddl>
 ```
 
 ## Requirements
