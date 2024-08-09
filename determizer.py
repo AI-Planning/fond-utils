@@ -10,12 +10,17 @@ from pddl.logic.effects import AndEffect
 
 from normalizer import normalize
 
+DEBUG = False
 
 def determinize(domain):
     
     new_actions = []
 
     for act in domain.actions:
+
+        if DEBUG:
+            print(f"\nNormalizing action: {act.name}")
+
         new_act = normalize(act)
         if isinstance(new_act.effect, OneOf):
             counter = 1

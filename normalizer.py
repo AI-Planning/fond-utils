@@ -68,7 +68,7 @@ def _flatten(eff):
         return list(chain(*(list(map(_flatten, eff.operands)))))
 
     elif isinstance(eff, When):
-        return [When(eff.condition, res) for res in _flatten(eff.result)]
+        return [When(eff.condition, res) for res in _flatten(eff.effect)]
 
     # Default cases
     elif isinstance(eff, Not):
