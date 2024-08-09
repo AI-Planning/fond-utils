@@ -52,7 +52,7 @@ def main(din, dout):
     domain = parse_domain(din)
     detdomain = determinize(domain)
     with open(dout, 'w') as f:
-        f.write(domain_to_string(detdomain))
+        f.write(domain_to_string(detdomain).replace(':non-deterministic', ''))
 
 
 if __name__ == '__main__':
