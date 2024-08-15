@@ -55,26 +55,22 @@ def determinize(domain: Domain) -> Domain:
     )
 
 
-def main(din, dout):
-    domain = parse_domain(din)
-    detdomain = determinize(domain)
-    with open(dout, "w") as f:
-        f.write(domain_to_string(detdomain))
+def main(domain_in, domain_out):
+    domain = parse_domain(domain_in)
+    det_domain = determinize(domain)
+    with open(domain_out, "w") as f:
+        f.write(domain_to_string(det_domain))
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--input",
-        dest="din",
-        required=True,
+        "domain",
         help="Input (non-deterministic) domain file",
     )
     parser.add_argument(
-        "--output",
-        dest="dout",
-        required=True,
+        "det_domain",
         help="Output (deterministic) domain file",
     )
     args = parser.parse_args()
-    main(args.din, args.dout)
+    main(args.domain, args.det_domain)

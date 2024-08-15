@@ -6,8 +6,9 @@ Utilities for parsing and manipulating the FOND planning language. Will be the e
 
 ```bash
 # Determinize a FOND problem
-python determinizer --input <in-domain.pddl> --output <out-domain.pddl>
+python determinizer <in-domain.pddl> <out-domain.pddl>
 ```
 
 ## Requirements
+
 - [`pddl`](https://github.com/AI-Planning/pddl)
