@@ -1,9 +1,7 @@
 import argparse
 
-from pddl import parse_domain
 from pddl.action import Action
 from pddl.core import Domain
-from pddl.formatter import domain_to_string
 from pddl.logic.base import OneOf
 from pddl.logic.effects import AndEffect
 from pddl.requirements import Requirements
