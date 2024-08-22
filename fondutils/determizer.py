@@ -9,7 +9,7 @@ from pddl.logic.effects import AndEffect
 from pddl.requirements import Requirements
 
 
-from normalizer import normalize
+from fondutils.normalizer import normalize_operator
 
 DEBUG = False
 
@@ -22,7 +22,7 @@ def determinize(domain: Domain) -> Domain:
         if DEBUG:
             print(f"\nNormalizing action: {act.name}")
 
-        new_act = normalize(act)
+        new_act = normalize_operator(act)
         if isinstance(new_act.effect, OneOf):
             counter = 1
             for eff in new_act.effect.operands:
@@ -54,12 +54,6 @@ def determinize(domain: Domain) -> Domain:
         derived_predicates=domain.derived_predicates,
     )
 
-
-def main(domain_in, domain_out):
-    domain = parse_domain(domain_in)
-    det_domain = determinize(domain)
-    with open(domain_out, "w") as f:
-        f.write(domain_to_string(det_domain))
 
 
 if __name__ == "__main__":

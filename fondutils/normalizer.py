@@ -8,7 +8,10 @@ from itertools import product, chain
 
 DEBUG = False
 
-def normalize(op):
+def normalize(domain):
+    pass
+
+def normalize_operator(op):
 
     effs = flatten(op.effect)
 
@@ -19,7 +22,7 @@ def normalize(op):
         for i in range(len(effs)):
             if not isinstance(effs[i], AndEffect):
                 effs[i] = AndEffect(effs[i])
-        
+
         # As an optimization, compress one level of nested AndEffects on the outcomes
         new_outcomes = []
         for outcome in effs:
@@ -76,7 +79,7 @@ def _flatten(eff):
 
     elif isinstance(eff, Predicate):
         return [eff]
-    
+
     else:
         if DEBUG:
             print ("Base: %s" % str(eff))
