@@ -27,7 +27,7 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command in ["determinize", "normalize"] and not args.output:
+    if (args.command in ["determinize", "normalize"]) and (not args.output) and (not args.console):
         parser.error("--output is required for determinize and normalize")
 
     fond_domain, fond_problem = parse_domain_problem(args.input)
@@ -48,8 +48,9 @@ def main():
     elif args.command == "normalize":
         new_domain = normalize(fond_domain)
 
-    with open(args.output, "w") as f:
-        f.write(domain_to_string(new_domain))
+    if args.output:
+        with open(args.output, "w") as f:
+            f.write(domain_to_string(new_domain))
 
     if args.outproblem:
         with open(args.outproblem, "w") as f:
