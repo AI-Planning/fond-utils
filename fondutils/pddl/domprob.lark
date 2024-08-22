@@ -1,0 +1,12 @@
+start: [domain_start] [problem_start]
+
+
+%ignore /\s+/
+%ignore COMMENT
+
+%import .domain.start -> domain_start
+%import .problem.start -> problem_start
+
+%import common.COMMENT -> COMMENT
+%import common.WS -> WS
+
