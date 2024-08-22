@@ -12,7 +12,7 @@ from fondutils.normalizer import normalize_operator
 DEBUG = False
 
 
-def determinize(domain: Domain) -> Domain:
+def determinize(domain: Domain, prefix: str, suffix: str) -> Domain:
     new_actions = []
 
     for act in domain.actions:
@@ -29,7 +29,7 @@ def determinize(domain: Domain) -> Domain:
                 ), f"Effect in OneOf is not an AndEffect: {eff}"
                 new_actions.append(
                     Action(
-                        name=f"{act.name}_DETDUP_{counter}",
+                        name=f"{act.name}{prefix}{counter}{suffix}",
                         parameters=act.parameters,
                         precondition=act.precondition,
                         effect=eff,

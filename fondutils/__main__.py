@@ -14,6 +14,14 @@ def main():
     parser.add_argument("command", choices=["check", "determinize", "normalize"])
     parser.add_argument("--input", required=True, help="Input domain file")
     parser.add_argument("--output", help="Output domain file")
+
+    parser.add_argument("--prefix",
+                        default="_DETDUP_",
+                        help="Prefix for determinized action outcome identifier")
+    parser.add_argument("--suffix",
+                        default="",
+                        help="Suffix for determinized action outcome identifier")
+
     args = parser.parse_args()
 
     # --output is required for determinize and normalize
@@ -27,7 +35,7 @@ def main():
         print(domain_to_string(domain))
 
     elif args.command == "determinize":
-        det_domain = determinize(domain)
+        det_domain = determinize(domain, args.prefix, args.suffix)
         with open(args.output, "w") as f:
             f.write(domain_to_string(det_domain))
 
