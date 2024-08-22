@@ -20,7 +20,7 @@ This repo extends `pddl` to accept single files containing both the domain and t
 
 ## Example runs
 
-The system is provided as a module `fond-utils`. To just check that the PDDL input file is parsed well, just issue the command `check` and report to console:
+The system is provided as a module `fondutils`. To just check that the PDDL input file is parsed well, just issue the command `check` and report to console:
 
 ```shell
 $ python -m fondutils check --input tests/domain_03.pddl

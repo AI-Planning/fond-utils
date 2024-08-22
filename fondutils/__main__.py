@@ -22,9 +22,10 @@ def main():
                         default="",
                         help="Suffix for determinized action outcome identifier")
 
+    parser.add_argument("--console", action="store_true", help="Print the domain after processing")
+
     args = parser.parse_args()
 
-    # --output is required for determinize and normalize
     if args.command in ["determinize", "normalize"] and not args.output:
         parser.error("--output is required for determinize and normalize")
 
@@ -35,14 +36,16 @@ def main():
         print(domain_to_string(domain))
 
     elif args.command == "determinize":
-        det_domain = determinize(domain, args.prefix, args.suffix)
-        with open(args.output, "w") as f:
-            f.write(domain_to_string(det_domain))
+        new_domain = determinize(domain, args.prefix, args.suffix)
 
     elif args.command == "normalize":
-        norm_domain = normalize(domain)
-        with open(args.output, "w") as f:
-            f.write(domain_to_string(norm_domain))
+        new_domain = normalize(domain)
+
+    with open(args.output, "w") as f:
+        f.write(domain_to_string(new_domain))
+
+    if args.console:
+        print(domain_to_string(new_domain))
 
 
 if __name__ == '__main__':

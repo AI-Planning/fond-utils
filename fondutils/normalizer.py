@@ -21,7 +21,7 @@ def normalize(domain: Domain) -> Domain:
         new_actions.append(normalize_operator(act))
 
     return Domain(
-        name=domain.name,
+        name=domain.name + "_NORM",
         requirements=frozenset(
             [r for r in domain.requirements if r is not Requirements.NON_DETERMINISTIC]
         ),

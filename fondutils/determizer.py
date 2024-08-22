@@ -40,7 +40,7 @@ def determinize(domain: Domain, prefix: str, suffix: str) -> Domain:
             new_actions.append(new_act)
 
     return Domain(
-        name=domain.name,
+        name=domain.name + "_ALLOUT",
         requirements=frozenset(
             [r for r in domain.requirements if r is not Requirements.NON_DETERMINISTIC]
         ),
