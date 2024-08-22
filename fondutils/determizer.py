@@ -1,20 +1,18 @@
 import argparse
 
-from pddl import parse_domain
 from pddl.action import Action
 from pddl.core import Domain
-from pddl.formatter import domain_to_string
 from pddl.logic.base import OneOf
 from pddl.logic.effects import AndEffect
 from pddl.requirements import Requirements
 
 
-from normalizer import normalize
+from fondutils.normalizer import normalize_operator
 
 DEBUG = False
 
 
-def determinize(domain: Domain) -> Domain:
+def determinize(domain: Domain, prefix: str, suffix: str) -> Domain:
     new_actions = []
 
     for act in domain.actions:
@@ -22,7 +20,7 @@ def determinize(domain: Domain) -> Domain:
         if DEBUG:
             print(f"\nNormalizing action: {act.name}")
 
-        new_act = normalize(act)
+        new_act = normalize_operator(act)
         if isinstance(new_act.effect, OneOf):
             counter = 1
             for eff in new_act.effect.operands:
@@ -31,7 +29,7 @@ def determinize(domain: Domain) -> Domain:
                 ), f"Effect in OneOf is not an AndEffect: {eff}"
                 new_actions.append(
                     Action(
-                        name=f"{act.name}_DETDUP_{counter}",
+                        name=f"{act.name}{prefix}{counter}{suffix}",
                         parameters=act.parameters,
                         precondition=act.precondition,
                         effect=eff,
@@ -42,7 +40,7 @@ def determinize(domain: Domain) -> Domain:
             new_actions.append(new_act)
 
     return Domain(
-        name=domain.name,
+        name=domain.name + "_ALLOUT",
         requirements=frozenset(
             [r for r in domain.requirements if r is not Requirements.NON_DETERMINISTIC]
         ),
@@ -54,12 +52,6 @@ def determinize(domain: Domain) -> Domain:
         derived_predicates=domain.derived_predicates,
     )
 
-
-def main(domain_in, domain_out):
-    domain = parse_domain(domain_in)
-    det_domain = determinize(domain)
-    with open(domain_out, "w") as f:
-        f.write(domain_to_string(det_domain))
 
 
 if __name__ == "__main__":

@@ -1,14 +1,40 @@
 
 from pddl.action import Action
+from pddl.core import Domain
 from pddl.logic.base import OneOf, Not
 from pddl.logic.effects import When, AndEffect
 from pddl.logic.predicates import Predicate
+from pddl.requirements import Requirements
 
 from itertools import product, chain
 
 DEBUG = False
 
-def normalize(op):
+def normalize(domain: Domain) -> Domain:
+    new_actions = []
+
+    for act in domain.actions:
+
+        if DEBUG:
+            print(f"\nNormalizing action: {act.name}")
+
+        new_actions.append(normalize_operator(act))
+
+    return Domain(
+        name=domain.name + "_NORM",
+        requirements=frozenset(
+            [r for r in domain.requirements if r is not Requirements.NON_DETERMINISTIC]
+        ),
+        types=domain.types,
+        constants=domain.constants,
+        predicates=domain.predicates,
+        actions=new_actions,
+        functions=domain.functions,
+        derived_predicates=domain.derived_predicates,
+    )
+
+
+def normalize_operator(op):
 
     effs = flatten(op.effect)
 
@@ -19,7 +45,7 @@ def normalize(op):
         for i in range(len(effs)):
             if not isinstance(effs[i], AndEffect):
                 effs[i] = AndEffect(effs[i])
-        
+
         # As an optimization, compress one level of nested AndEffects on the outcomes
         new_outcomes = []
         for outcome in effs:
@@ -76,9 +102,8 @@ def _flatten(eff):
 
     elif isinstance(eff, Predicate):
         return [eff]
-    
+
     else:
         if DEBUG:
             print ("Base: %s" % str(eff))
         raise ValueError("Unexpected effect type: %s" % type(eff))
-        # return [eff]
