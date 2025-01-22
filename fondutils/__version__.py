@@ -15,7 +15,7 @@
 __title__ = "fond-utils"
 __description__ = "FOND Utilities"
 __url__ = "https://github.com/AI-Planning/fond-utils/"
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __author__ = "Christian Muise, Sebastian Sardina"
 __author_email__ = (
     "christian.muise@queensu.ca, ssardina@gmail.com"
