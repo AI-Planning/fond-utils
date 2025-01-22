@@ -26,7 +26,7 @@ def main():
     )
     parser.add_argument(
         "--prefix",
-        default="DETDUP",
+        default="_DETDUP_",
         help="Prefix for determinized action outcome name (Default: %(default)s)",
     )
     parser.add_argument(
