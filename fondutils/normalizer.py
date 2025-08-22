@@ -1,7 +1,7 @@
 from pddl.action import Action
 from pddl.core import Domain
 from pddl.logic.base import OneOf, Not, And
-from pddl.logic.effects import When
+from pddl.logic.effects import When, Forall
 from pddl.logic.predicates import Predicate
 from pddl.requirements import Requirements
 from pddl.logic.functions import (
@@ -99,6 +99,11 @@ def _flatten(eff):
 
     if DEBUG:
         print("Flattening %s" % str(eff))
+
+    if isinstance(eff, Forall):
+        if (len(flatten(eff.effect)) > 1):
+            raise ValueError("Oneof cannot be used within effect type: %s" % type(eff))
+        return [eff]
 
     if isinstance(eff, And):
         if 0 == len(eff.operands):
