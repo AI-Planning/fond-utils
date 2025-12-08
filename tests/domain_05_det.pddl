@@ -1,6 +1,8 @@
 (define (domain blocks-domain_ALLOUT)
     (:requirements :equality :typing)
-    (:types block)
+    (:types
+        block - object
+    )
     (:predicates (clear ?b - block)  (emptyhand) (emptyhead) (holding ?b - block)  (on ?b1 - block ?b2 - block)  (on-table ?b - block))
     (:action pick-up-complex01_DETDUP_1
         :parameters (?b1 - block ?b2 - block)

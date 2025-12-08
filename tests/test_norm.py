@@ -102,3 +102,10 @@ def test_08():
 
 if __name__ == "_main_":
     test_01()
+    test_02()
+    test_03()
+    test_04()
+    test_05()
+    test_06()
+    test_07()
+    test_08()
