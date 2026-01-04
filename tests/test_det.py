@@ -112,6 +112,16 @@ def test_09():
 
     assert domain_to_string(domain_det) == domain_expected
 
+def test_10():
+    """tests if we have a basic condeff as an outcome"""
+    domain = parse_domain(TEST_DIRECTORY / "domain_07.pddl")
+    domain_det = determinize(domain, dom_suffix="")
+
+    with open(TEST_DIRECTORY / "domain_07_det.pddl", "r") as file:
+        domain_expected = file.read()
+
+    assert domain_to_string(domain_det) == domain_expected
+
 
 if __name__ == "__main__":
     test_01()
@@ -123,3 +133,4 @@ if __name__ == "__main__":
     test_07()
     test_08()
     test_09()
+    test_10()

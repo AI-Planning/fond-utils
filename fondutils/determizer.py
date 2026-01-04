@@ -3,13 +3,14 @@ import argparse
 from pddl.action import Action
 from pddl.core import Domain
 from pddl.logic.base import OneOf, And, Not
+from pddl.logic.effects import When
 from pddl.logic.predicates import Predicate
 from pddl.requirements import Requirements
 
 
 from .normalizer import normalize_operator
 
-DEBUG = False
+DEBUG = True
 
 
 def determinize(domain: Domain, dom_suffix: str = "ALLOUT", op_prefix: str = "_DETDUP_", op_suffix: str = "") -> Domain:
@@ -47,7 +48,7 @@ def determinize(domain: Domain, dom_suffix: str = "ALLOUT", op_prefix: str = "_D
             counter = 1
             for eff in new_act.effect.operands:
                 assert isinstance(
-                    eff, (And, Predicate, Not)
+                    eff, (And, Predicate, Not, When)
                 ), f"Effect in OneOf is not an And effect: {eff}"
                 new_actions.append(
                     Action(
