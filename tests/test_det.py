@@ -122,6 +122,14 @@ def test_10():
 
     assert domain_to_string(domain_det) == domain_expected
 
+def test_11():
+    """Test parsing just a problem file"""
+    _, problem = parse_domain_problem(TEST_DIRECTORY / "problem_03.pddl")
+
+    with open(TEST_DIRECTORY / "problem_03.pddl", "r") as file:
+        problem_expected = file.read()
+
+    assert problem_to_string(problem).strip() == problem_expected.strip()
 
 if __name__ == "__main__":
     test_01()
@@ -134,3 +142,4 @@ if __name__ == "__main__":
     test_08()
     test_09()
     test_10()
+    test_11()
