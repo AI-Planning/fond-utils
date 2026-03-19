@@ -3,7 +3,7 @@
 Utilities for parsing and manipulating the FOND planning language (those containing non-deterministic `oneof` effects). At this point the system can:
 
 - _Check_ a file contains a legal FOND domain/problem.
-- _Normalize_ a FOND planning domain (i.e., have a single top-level oneof clause in the effect).
+- _Normalize_ a FOND planning domain (i.e., have a single top-level `oneof` clause in the effect).
 - _Compute the all-outcome determinization_ of a FOND domain, where each non-deterministic action is replaced with a set of deterministic actions, each encoding one possible effect outcome of the action. A solution in the deterministic version amounts to a weak plan solution in the original FOND problem.
   - Note the determinizer produces another PDDL domain and does not deal with the problem itself, unlike the SAS-based determinizers used in other planners (like [PRP](https://github.com/QuMuLab/planner-for-relevant-policies), [FONDSAT](https://github.com/tomsons22/FOND-SAT), or [CFOND-ASP](https://github.com/ssardina-research/cfond-asp)) that are are based on the SAS translator in [Fast-Downard](https://github.com/aibasel/downward) classical planner and produce a SAS encoding of the determinization of a specific instance planning problem. For these determinizers that output SAS encodings, please refer to the individual planners or the [translator-fond](https://github.com/ssardina-research/translator-fond) repo.
 

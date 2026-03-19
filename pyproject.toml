@@ -9,11 +9,12 @@ authors = [
     { name="Christian Muise", email="christian.muise@queensu.ca" },
     { name="Sebastian Sardina", email="ssardina@gmail.com" }
 ]
-readme = "README.md"
+readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "MIT" }
 requires-python = ">=3.8"
 dependencies = [
-  "pddl"
+  "pddl",
+  "requests"
 ]
 classifiers = [
   "Programming Language :: Python :: 3",
