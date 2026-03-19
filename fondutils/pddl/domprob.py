@@ -18,9 +18,16 @@ GRAMMAR = "domprob: [domain] [problem]\n" + GRAMMAR_FILE.read_text()
 
 
 class DomainProblemTransformer(Transformer[Any, Tuple[Domain | None, Problem | None]]):
-    """A transformer for domain + problems"""
+    """A transformer for domain + problems.
+    Just delegates to the domain and problem transformers."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.domain_transformer = DomainTransformer()
+        self.problem_transformer = ProblemTransformer()
 
     def domprob(self, children):
+        """the start symbols"""
         domain = None
         problem = None
         if children:
@@ -32,11 +39,6 @@ class DomainProblemTransformer(Transformer[Any, Tuple[Domain | None, Problem | N
             else:
                 domain, problem = children
         return domain, problem
-
-    def __init__(self) -> None:
-        super().__init__()
-        self.domain_transformer = DomainTransformer()
-        self.problem_transformer = ProblemTransformer()
 
     def domain(self, children) -> Domain:
         return self.domain_transformer.domain(children)
@@ -58,12 +60,14 @@ class DomainProblemTransformer(Transformer[Any, Tuple[Domain | None, Problem | N
 
 
 class DomainProblemParser(BaseParser[Tuple[Domain | None, Problem | None]]):
-    """PDDL domain parser class."""
+    """PDDL domain + problem parser class."""
 
     transformer_cls = DomainProblemTransformer
     start_symbol = "domprob"
 
     def __init__(self, *args, **kwargs) -> None:
+        # need to change the parser to earley to be able to parse files with just problems (no left)
+        #  "lalr" parser won't work (1 lookahead is not enough to know which rule to use)
         Transformer.__init__(self, *args, **kwargs)
         self._transformer = self.transformer_cls()
         self._parser = Lark(
