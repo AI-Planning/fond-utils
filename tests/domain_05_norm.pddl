@@ -1,6 +1,6 @@
 (define (domain blocks-domain_NORM)
-    (:requirements :equality :typing)
-    (:types block)
+    (:requirements :equality :typing :non-deterministic)
+    (:types block - object)
     (:predicates (clear ?b - block)  (emptyhand) (emptyhead) (holding ?b - block)  (on ?b1 - block ?b2 - block)  (on-table ?b - block))
     (:action pick-up
         :parameters (?b1 - block ?b2 - block)
