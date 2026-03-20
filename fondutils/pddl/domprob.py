@@ -1,73 +1,85 @@
+
 import sys
 from lark import Lark
 
-from pddl.helpers.base import call_parser
+from typing import Any, Tuple
+
+from pddl.core import Domain, Problem
+from pddl.parser.base import BaseParser
 from pddl.parser.domain import DomainTransformer
 from pddl.parser.problem import ProblemTransformer
 from pddl.formatter import domain_to_string, problem_to_string
 
+from pddl.parser import GRAMMAR_FILE
 
-from lark.visitors import Transformer, merge_transformers
+from lark.visitors import Transformer
 
-from pddl.parser import PARSERS_DIRECTORY as IMPORT_PARSERS_DIRECTORY
-
-
-DOMPROB_GRAMMAR = r"""
-    start: [domain_start] [problem_start]
+GRAMMAR = "domprob: [domain] [problem]\n" + GRAMMAR_FILE.read_text()
 
 
-    %ignore /\s+/
-    %ignore COMMENT
+class DomainProblemTransformer(Transformer[Any, Tuple[Domain | None, Problem | None]]):
+    """A transformer for domain + problems.
+    Just delegates to the domain and problem transformers."""
 
-    %import .domain.start -> domain_start
-    %import .problem.start -> problem_start
+    def __init__(self) -> None:
+        super().__init__()
+        self.domain_transformer = DomainTransformer()
+        self.problem_transformer = ProblemTransformer()
 
-    %import common.COMMENT -> COMMENT
-    %import common.WS -> WS
+    def domprob(self, children):
+        """the start symbols"""
+        domain = None
+        problem = None
+        if children:
+            if len(children) == 1:
+                if isinstance(children[0], Domain):
+                    domain = children[0]
+                else:
+                    problem = children[0]
+            else:
+                domain, problem = children
+        return domain, problem
 
-"""
+    def domain(self, children) -> Domain:
+        return self.domain_transformer.domain(children)
 
-class DomainProblemTransformer(Transformer):
-    """A transformer for domain + problems"""
+    def problem(self, children) -> Problem:
+        return self.problem_transformer.problem(children)
 
-    # def __init__(self, *args, **kwargs):
-    #     """Initialize the domain transformer."""
-    #     super().__init__(*args, **kwargs)
+    def transform(self, tree) -> Tuple[Domain | None, Problem | None]:
+        domain = None
+        problem = None
+        for child in tree.children:
+            if child is None:
+                continue
+            if child.data == "domain":
+                domain = self.domain_transformer.transform(child)
+            elif child.data == "problem":
+                problem = self.problem_transformer.transform(child)
+        return domain, problem
 
-    def start(self, children):
-        return children
 
-    def domain_start(self, children):
-        return children[0]
+class DomainProblemParser(BaseParser[Tuple[Domain | None, Problem | None]]):
+    """PDDL domain + problem parser class."""
 
-    def problem_start(self, children):
-        return children[0]
+    transformer_cls = DomainProblemTransformer
+    start_symbol = "domprob"
 
-
-class DomProbParser:
-    """Domain and/or problem PDDL domain parser class."""
-
-    def __init__(self):
-        """Initialize."""
-        self._transformer = merge_transformers(
-            DomainProblemTransformer(),
-            domain=DomainTransformer(),
-            problem=ProblemTransformer(),
-        )
-        # need to use earley; lalr will not be able to recognise files with just problems (no left)
-        # self._parser = Lark.open(DOMPROB_GRAMMAR_FILE, rel_to=__file__)
+    def __init__(self, *args, **kwargs) -> None:
+        # need to change the parser to earley to be able to parse files with just problems (no left)
+        #  "lalr" parser won't work (1 lookahead is not enough to know which rule to use)
+        Transformer.__init__(self, *args, **kwargs)
+        self._transformer = self.transformer_cls()
         self._parser = Lark(
-            DOMPROB_GRAMMAR, parser="earley", import_paths=[IMPORT_PARSERS_DIRECTORY]
+            GRAMMAR,
+            parser="earley",
+            start=self.start_symbol,
         )
 
-    def __call__(self, text):
-        """Call the object as a function
-        Will return the object representing the parsed text/file which is an object
-        of class pddl_parser.app_problem.APPProblem
+    def __call__(self, text: str) -> Tuple[Domain | None, Problem | None]:
+        tree = self._parser.parse(text)
+        return self._transformer.transform(tree)
 
-        The call_parser() function is part of pddl package: will build a Tree from text and then an object pddl_parser.app_problem.APPProblem from the Tree
-        """
-        return call_parser(text, self._parser, self._transformer)
 
 if __name__ == "__main__":
     # we can use this for quick testing/debugging
@@ -75,7 +87,7 @@ if __name__ == "__main__":
     with open(file, "r") as f:
         ptext = f.read()
 
-    domain, problem = DomProbParser()(ptext)
+    domain, problem = DomainProblemParser()(ptext)
     if domain:
         domprob = print(domain_to_string(domain))
     if problem:

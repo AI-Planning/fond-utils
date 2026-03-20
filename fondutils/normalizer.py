@@ -1,3 +1,5 @@
+import argparse
+
 from pddl.action import Action
 from pddl.core import Domain
 from pddl.logic.base import OneOf, Not, And
@@ -36,9 +38,7 @@ def normalize(domain: Domain, dom_suffix: str = "") -> Domain:
 
     return Domain(
         name=domain.name + dom_suffix,
-        requirements=frozenset(
-            [r for r in domain.requirements if r is not Requirements.NON_DETERMINISTIC]
-        ),
+        requirements=domain.requirements,
         types=domain.types,
         constants=domain.constants,
         predicates=domain.predicates,
@@ -131,3 +131,4 @@ def _flatten(eff):
         if DEBUG:
             print("Base: %s" % str(eff))
         raise ValueError("Unexpected effect type: %s" % type(eff))
+
