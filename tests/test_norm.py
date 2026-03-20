@@ -1,6 +1,7 @@
 import io
 from fondutils.pddl import parse_domain_problem
 from pddl.formatter import domain_to_string, problem_to_string
+from pddl import parse_domain
 
 from fondutils.normalizer import normalize
 
@@ -11,24 +12,28 @@ import requests
 _current_filepath = inspect.getframeinfo(inspect.currentframe()).filename  # type: ignore
 TEST_DIRECTORY = Path(_current_filepath).absolute().parent
 
+
 def test_01():
+    # pytest tests/test_norm.py  -k test_01
     domain, _ = parse_domain_problem(TEST_DIRECTORY / "domain_01.pddl")
     domain_norm = normalize(domain, dom_suffix="NORM")
 
-    with open(TEST_DIRECTORY / "domain_01_norm.pddl", "r") as file:
-        domain_expected = file.read()
+    domain_expected = parse_domain(TEST_DIRECTORY / "domain_01_norm.pddl")
+    # with open(TEST_DIRECTORY / "domain_01_norm.pddl", "r") as file:
+    #     domain_expected = file.read()
 
-    assert domain_to_string(domain_norm) == domain_expected
+    assert domain_to_string(domain_norm) == domain_to_string(domain_expected)
 
 
 def test_02():
     domain, _ = parse_domain_problem(TEST_DIRECTORY / "domain_02.pddl")
     domain_norm = normalize(domain, dom_suffix="NORM")
 
-    with open(TEST_DIRECTORY / "domain_02_norm.pddl", "r") as file:
-        domain_expected = file.read()
+    domain_expected = parse_domain(TEST_DIRECTORY / "domain_02_norm.pddl")
+    # with open(TEST_DIRECTORY / "domain_02_norm.pddl", "r") as file:
+    #     domain_expected = file.read()
 
-    assert domain_to_string(domain_norm) == domain_expected
+    assert domain_to_string(domain_norm) == domain_to_string(domain_expected)
 
 
 def test_03():
